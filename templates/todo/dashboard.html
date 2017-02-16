@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block staticcss %}
+
+{% endblock %}
+{% block content %}
+
+
+<!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+
+
+                    <ol class="breadcrumb">
+                        <li><a href="/"><span class="glyphicon glyphicon-home"></span></a></li>
+                        <li class="active">Dashboard</li>
+                    </ol>
+
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <div {% if message.tags %} class="alert alert-{{ message.tags }}" {% endif %}><strong>{{ message }}</strong></div>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <div class="row">
+
+            <div class="col-lg-3 col-md-6">
+                    <div class="panel panel-yellow">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <i class="fa fa-shopping-cart fa-5x"></i>
+                                </div>
+                                <div class="col-xs-9 text-right">
+                                    <div class="huge">0</div>
+                                    <div>新任务</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{% url 'addbaseitem' %}">
+                            <div class="panel-footer">
+                                <span class="pull-left">创建计次任务</span>
+                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                                <div class="clearfix"></div>
+                            </div>
+                        </a>
+                    </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-comments fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">{{ business_num|default:0 }}</div>
+                                <div>新任务</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="{% url "addbusinesstask" %}">
+                        <div class="panel-footer">
+                            <span class="pull-left">创建计时任务</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="panel panel-green">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-tasks fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">{{ pro_num|default:0 }}</div>
+                                <div>新任务</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="{% url "addproject" %}">
+                        <div class="panel-footer">
+                            <span class="pull-left">创建项目事项</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-lg-9">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-bell fa-fw"></i> 待办任务
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="list-group">
+                                {% for task in latest %}
+                                <a href="#" class="list-group-item">
+                                    <i class="fa fa-tasks fa-fw"></i> 新的任务  <strong>{{ task.title }}</strong>
+                                    <span class="pull-right text-muted small">
+                                        <em>
+                                        {{ task.created_by.username }} 创建于
+                                        </em>
+
+                                        {{ task.created_date }}
+                                    </span>
+                                </a>
+
+                                {% endfor %}
+
+                            </div>
+                            <!-- /.list-group -->
+
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+
+
+                </div>
+                <!-- /.col-lg-4 -->
+
+
+        </div>
+
+
+
+
+    </div>
+{% endblock %}

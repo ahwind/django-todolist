@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}任务列表{% endblock %}
+
+{% block staticcss %}
+    <!-- DataTables CSS -->
+<link href="{% static "bpd/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css" %}" rel="stylesheet">
+
+    <!-- DataTables Responsive CSS -->
+    <link href="{% static "bpd/bower_components/datatables-responsive/css/dataTables.responsive.css" %}" rel="stylesheet">
+{% endblock %}
+
+{% block staticjs %}
+
+    <script src="{% static "bpd/bower_components/datatables/media/js/jquery.dataTables.min.js" %}"></script>
+    <script src="{% static "bpd/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js" %}"></script>
+    <script src="{% static "bpd/bower_components/datatables-responsive/js/dataTables.responsive.js" %}"></script>
+{% endblock %}
+
+{% block content %}
+
+
+<!-- Page Content -->
+    <div id="page-wrapper">
+
+
+        <div class="container-fluid">
+            <div class="row">
+
+
+                    <ol class="breadcrumb">
+                        <li><a href="/"><span class="glyphicon glyphicon-home"></span></a></li>
+                        <li class="active">任务详情页</li>
+                        <li class="active"><a href="javascript:history.go(-1);">返回前页</a></li>
+                    </ol>
+
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <div {% if message.tags %} class="alert alert-{{ message.tags }}" {% endif %}><strong>{{ message }}</strong></div>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <div class="row">
+
+            <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-th-list fa-fw"></i> {{ taskitem.title }}
+
+                            <div class="pull-right">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                        <i class="fa fa-chevron-down"></i>
+
+                                    </button>
+                                    <ul class="dropdown-menu pull-right" role="menu">
+                                        <li><a href="{% url 'edittaskitem' pid %}"><i class="fa fa-edit fa-fw"></i>编辑</a>
+                                        </li>
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="list-group"><strong>标题:</strong> <code> {{ taskitem.title }}</code></div>
+                            <div class="list-group"><strong>父项目:</strong> <code> {{ taskitem.project|default:'' }}</code></div>
+                            <div class="list-group"><strong>业务类型:</strong> <code> {{ taskitem.type|default:'' }}</code></div>
+
+                            <div class="list-group"><strong>创建人:</strong> <code> {{ taskitem.created_by }}</code></div>
+                            <div class="list-group"><strong>创建日期:</strong> <code> {{ taskitem.created_date }}</code></div>
+
+                            <div class="list-group"><strong>截止日期:</strong> <code> {{ taskitem.due_date }}</code></div>
+
+                            <div class="list-group"><strong>完成日期:</strong> <code> {{ taskitem.completed_date }}</code></div>
+
+                            <div class="list-group"><strong>状态:</strong> <code> {{ taskitem.get_status_display }}</code></div>
+                            <div class="list-group"><strong>分配给:</strong> <code> {{ taskitem.assigned_to }}</code></div>
+                            <div class="list-group"><strong>权重:</strong> <code> {{ taskitem.get_priority_display }}</code></div>
+                            <div class="list-group"><strong>耗时:</strong> <code> {{ taskitem.length }}</code></div>
+                            <div class="list-group"><strong>计次:</strong> <code> {{ taskitem.count }}</code></div>
+                            <div class="list-group"><strong>备注:</strong> <code> {{ taskitem.note }}</code></div>
+
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+
+
+                </div>
+                <!-- /.col-lg-4 -->
+
+
+            <div class="col-lg-4">
+
+                <div class="chat-panel panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-comments fa-fw"></i>
+                            评论
+
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <ul class="chat">
+
+                            {% for comment in itemcomment %}
+                                <li class="left clearfix">
+                                    <span class="chat-img pull-left">
+                                        <button type="button" class="btn btn-info btn-circle btn-lg"><i class="fa fa-user"></i></button>
+                                    </span>
+                                    <div class="chat-body clearfix">
+                                        <div class="header">
+                                            <strong class="primary-font">{{ comment.author }}</strong>
+                                            <small class="pull-right text-muted">
+                                                <i class="fa fa-clock-o fa-fw"></i> {{ comment.date|date:"Y-m-d H:i:s" }}
+                                            </small>
+                                        </div>
+                                        <p>
+                                            {{ comment.body|safe|urlize|linebreaks }}
+
+                                            {% empty %}
+
+                                            没有评论
+                                        </p>
+                                    </div>
+                                </li>
+                            {% endfor %}
+
+                            </ul>
+                        </div>
+                        <!-- /.panel-body -->
+                        <form role="form" method="post">
+                        <div class="panel-footer">
+                            <div class="input-group">
+                                <textarea name="comment-body"  class="form-control input-sm"  placeholder="在这里输入你的评论" /></textarea>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-warning btn-sm" id="btn-chat" type="submit">
+                                        提交
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <!-- /.panel-footer -->
+
+                        </form>
+
+                </div>
+                <!-- /.panel .chat-panel -->
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

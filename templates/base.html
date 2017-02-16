@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load staticfiles %}
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>任务管理系统</title>
+
+    <link href="{% static "bpd/bower_components/bootstrap/dist/css/bootstrap.min.css" %}" rel="stylesheet">
+
+    <link href="{% static "bpd/bower_components/metisMenu/dist/metisMenu.min.css" %}" rel="stylesheet">
+
+    <link href="{% static "bpd/dist/css/sb-admin-2.css"%}" rel="stylesheet">
+
+    <link href="{% static "select2/css/select2.min.css"%}" rel="stylesheet">
+
+    <link href="{% static "bpd/bower_components/font-awesome/css/font-awesome.min.css"%}" rel="stylesheet" type="text/css">
+
+
+    {% block staticcss %}
+
+    {% endblock %}
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">任务管理平台</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-caret-down"></i> {{ request.user.username }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+
+                        <li><a href="/accounts/logout"><i class="fa fa-sign-out fa-fw"></i> 注销</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <li>
+                            <a href="/"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                        </li>
+
+                        <li>
+                            <a href="#"><i class="fa fa-wrench fa-fw"></i>我的待办
+                                <span class="badge">{{ unall }}</span>
+                                <span class="fa arrow"></span></a>
+
+                            <ul class="nav nav-second-level">
+
+
+                            <li>
+                                <a href="{% url 'baseitemlist' 'list'%}"><i class="fa fa-list-ul fa-fw"></i> 计次任务
+                                <span class="badge">{{ uncount }}</span></a>
+                            </li>
+
+                            <li>
+                                <a href="{% url 'mycron' 'list' %}"><i class="fa fa-th-list fa-fw"></i> 计划任务
+
+                                <span class="badge">{{ uncron }}</span></a>
+                            </li>
+
+                            <li>
+                                <a href="{% url 'mytodo' 'list' %}"><i class="fa fa-clock-o fa-fw"></i> 计时任务
+                                    <span class="badge">{{ unclock }}</span></a>
+                            </li>
+
+                            <li>
+                                <a href="{% url 'projectlist' 'list'%}"><i class="fa fa-list fa-fw"></i> 项目工作
+                                <span class="badge">{{ unpro }}</span></a>
+                            </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="{% url 'mygroup'%}"><i class="fa fa-calendar fa-fw"></i> 本周任务</a>
+                        </li>
+
+                        <li>
+                            <a href="{% url 'taskstatistics' %}"><i class="fa fa-group fa-fw"></i> 任务统计</a>
+                        </li>
+
+                        <li>
+                            <a href="{% url 'searchlist' %}"><i class="fa fa-search fa-fw"></i> 任务搜索</a>
+                        </li>
+                        {% if request.user.is_staff %}
+
+                        <li>
+                            <a href="#"><i class="fa fa-wrench fa-fw"></i>批量任务<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{% url 'multiaddtaskcount' %}"><i class="fa fa-list-ol fa-fw"></i> 计次任务</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'multiaddtask' %}"><i class="fa fa-clock-o fa-fw"></i> 计时任务</a>
+                                </li>
+
+                            </ul>
+                        </li>
+
+                        {% endif %}
+                        <li>
+                            <a href="{% url 'trashlist' %}"><i class="fa fa-trash fa-fw"></i> 垃圾箱</a>
+                        </li>
+
+                    </ul>
+                </div>
+
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        {% block content %}
+
+
+        {% endblock %}
+
+        <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+            请确认下面操作
+            </div>
+            <div class="modal-body">
+            确认删除该记录吗？
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            <a class="btn btn-danger btn-ok" id="delete">删除记录</a>
+            </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="{% static "bpd/bower_components/jquery/dist/jquery.min.js" %}"></script>
+
+    <script src="{% static "select2/js/select2.full.js" %}"></script>
+    <script src="{% static "select2/js/prettify.min.js" %}"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{% static "bpd/bower_components/bootstrap/dist/js/bootstrap.min.js" %}"></script>
+
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="{% static "bpd/bower_components/metisMenu/dist/metisMenu.min.js" %}"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="{% static "bpd/dist/js/sb-admin-2.js" %}"></script>
+
+    {% block staticjs %}
+
+    {% endblock %}
+    <script type="text/javascript">
+
+        $('#confirm-delete').on('show.bs.modal', function(e) {
+            $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+        });
+
+        $('button[name="mark"]').on('click', function(e){
+            var $form=$(this).closest('form');
+            e.preventDefault();
+
+        $('#confirm-delete').modal({ backdrop: 'static', keyboard: false })
+            .one('click', '#delete', function() {
+                $form.trigger('submit'); // submit the form
+            });
+            // .one() is NOT a typo of .on()
+    });
+
+    </script>
+
+</body>
+
+</html>

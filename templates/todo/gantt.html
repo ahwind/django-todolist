@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}项目列表{% endblock %}
+
+{% block staticcss %}
+
+<link rel="stylesheet" type="text/css" href="http://static.example.com/jsgantt/jsgantt.css"/>
+<script language="javascript" src="http://static.example.com/jsgantt/jsgantt.js"></script>
+<script language="javascript" src="http://static.example.com/jsgantt/graphics.js"></script>
+<script language="javascript" src="http://static.example.com/js/jquery-1.8.2.min.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<!-- Page Content -->
+    <div id="page-wrapper">
+
+
+
+        <div class="container-fluid">
+            <div class="row">
+
+                    <ol class="breadcrumb">
+                        <li><a href="/"><span class="glyphicon glyphicon-home"></span></a></li>
+                        <li class="active">甘特图</li>
+                        <li class="active"><a href="javascript:history.go(-1);">返回前页</a></li>
+                    </ol>
+
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+        <!-- /.row -->
+
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        项目甘特图
+
+                    </div>
+                    <!-- /.panel-heading -->
+
+
+                    <div class="panel-body">
+                            <div style="position:relative" class="gantt" id="GanttChartDIV"></div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+
+var jsondata;
+$.ajax({
+                           type: "get",
+                           url: "/ganttapi/?gid={{ gid }}",
+
+                           dataType: "json",
+                           async: false,
+                           success: function(data){
+               jsondata = data;
+               }
+});
+
+ var g = new JSGantt.GanttChart('g',document.getElementById('GanttChartDIV'), 'day');
+
+        g.setShowRes(1); // Show/Hide Responsible (0/1)
+        g.setShowDur(1); // Show/Hide Duration (0/1)
+        g.setShowComp(1); // Show/Hide % Complete(0/1)
+   g.setCaptionType('Resource');  // Set to Show Caption (None,Caption,Resource,Duration,Complete)
+
+  if( g ) {
+
+    for(var o in jsondata ){
+        g.AddTaskItem(new JSGantt.TaskItem(jsondata[o].id,jsondata[o].title, jsondata[o].created_date, jsondata[o].update_time,
+                'ff00ff', '/task/'+jsondata[o].id, 0, jsondata[o].assigned_to, jsondata[o].progress, 0, 12, 1));
+
+    }
+
+    g.Draw();
+    g.DrawDependencies();
+
+  }
+
+  else
+
+  {
+
+    alert("not defined");
+
+  }
+
+</script>
+{% endblock %}

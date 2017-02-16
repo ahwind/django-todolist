@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}编辑表单{% endblock %}
+
+{% block staticcss %}
+<link href="{% static "datetimepicker/datetimepicker.css" %}" rel="stylesheet">
+{% endblock %}
+
+{% block staticjs %}
+
+<script src="{% static "datetimepicker/bootstrap-datetimepicker.min.js" %}"></script>
+<script type="text/javascript">
+
+    $(".js-example-basic-multiple").select2();
+
+
+
+    $(".form_datetime").datetimepicker({
+        format: "yyyy-mm-dd",
+        minView: 2,
+        autoclose: true,
+        todayBtn: true,
+        pickerPosition: "bottom-left",
+        language: 'zh',
+        todayHighlight: true
+    });
+
+</script>
+{% endblock %}
+
+{% block content %}
+
+
+<!-- Page Content -->
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+
+
+                        <ol class="breadcrumb">
+                            <li><a href="/"><span class="glyphicon glyphicon-home"></span></a></li>
+                            <li class="active">任务列表</li>
+                            <li class="active"><a href="javascript:history.go(-1);">返回前页</a></li>
+                        </ol>
+
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
+
+            <div class="col-lg-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        操作面板
+                    </div>
+                    <div class="panel-body">
+                        <form  role="form" method="post">
+                        {% for hidden in form.hidden_fields %}
+                            {{ hidden }}
+                        {% endfor %}
+                        {% for field in form.visible_fields %}
+
+                            <div class="form-group">
+                                <label class="control-label">{{ field.label_tag }}</label>
+                                <div class="controls">
+
+                                    {{ field.errors }} {{ field }}{{ field.help_text }}
+                                </div>
+                            </div>
+                        {% endfor %}
+
+
+                        <div class="form-actions center">
+
+                            <button type="submit" class="btn btn-primary" >保存更改</button>
+                             <button type="reset" class="btn btn-default">取消</button>
+                        </div>
+
+                        </form>
+
+                    </div>
+
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                        <div {% if message.tags %} class="alert alert-{{ message.tags }}" {% endif %}><strong>{{ message }}</strong></div>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                </div>
+            </div>
+
+        <!--表单报错显示-->
+        {% if form.errors %}
+
+            {% for field, error in form.errors.items %}
+                <div class="alert alert-error">
+                    {{ field }} <code>{{ error }}</code>
+                </div>
+            {% endfor %}
+
+
+        {% endif %}
+
+
+
+        </div>
+        <!-- /#page-wrapper -->
+    <!-- Button trigger modal -->
+
+{% endblock %}

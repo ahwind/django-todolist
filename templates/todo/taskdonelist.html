@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}任务列表{% endblock %}
+
+{% block staticcss %}
+    <!-- DataTables CSS -->
+<link href="{% static "bpd/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css" %}" rel="stylesheet">
+
+    <!-- DataTables Responsive CSS -->
+    <link href="{% static "bpd/bower_components/datatables-responsive/css/dataTables.responsive.css" %}" rel="stylesheet">
+{% endblock %}
+
+{% block staticjs %}
+
+    <script src="{% static "bpd/bower_components/datatables/media/js/jquery.dataTables.min.js" %}"></script>
+    <script src="{% static "bpd/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js" %}"></script>
+    <script src="{% static "bpd/bower_components/datatables-responsive/js/dataTables.responsive.js" %}"></script>
+{% endblock %}
+
+{% block content %}
+
+
+<!-- Page Content -->
+    <div id="page-wrapper">
+
+
+        <div class="container-fluid">
+            <div class="row">
+
+
+                    <ol class="breadcrumb">
+                        <li><a href="/"><span class="glyphicon glyphicon-home"></span></a></li>
+                        <li class="active">任务列表</li>
+                    </ol>
+
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+        <!-- /.row -->
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <div {% if message.tags %} class="alert alert-{{ message.tags }}" {% endif %}><strong>{{ message }}</strong></div>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        任务列表
+
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+
+                        <!--表单报错显示-->
+                        {% if form.errors %}
+
+                            {% for field, error in form.errors.items %}
+                                <div class="alert alert-error">
+                                    {{ field }} <code>{{ error }}</code>
+                                </div>
+                            {% endfor %}
+
+
+                        {% endif %}
+                        <div class="dataTable_wrapper">
+                            <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>任务名称</th>
+                                        <th>创建人</th>
+                                        <th>创建日期</th>
+                                        <th>截止日期</th>
+                                        <th>分配给</th>
+                                        <th>状态</th>
+                                        <th>评论</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for list in tasklist %}
+                                    <tr class="odd gradeX">
+                                        <td>{{ list.id }}</td>
+                                        <td>{{ list.title }}</td>
+                                        <td>{{ list.created_by }}</td>
+                                        <td>{{ list.created_date }}</td>
+                                        <td class="center">{{ list.due_date }}</td>
+                                        <td class="center">{{ list.assigned_to }}</td>
+                                        <td>{{ list.get_status_display }}</td>
+                                        <td><a href="#">{{ list.itemcomment_set.all.count }}</a> </td>
+                                        <td>
+                                        <a class="btn btn-outline btn-primary" href="{% url 'taskview' list.id %}">查看</a>
+
+                                        <a class="btn btn-outline btn-danger" href="#">编辑</a>
+
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!--end panel-body-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
